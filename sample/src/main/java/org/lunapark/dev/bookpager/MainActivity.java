@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
+import org.lunapark.dev.bookpagerlib.PageCurlView;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import app.num.numandroidpagecurleffect.PageCurlView;
+
 
 
 public class MainActivity extends Activity {
@@ -20,8 +22,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         pageCurlView = (PageCurlView) findViewById(R.id.pager);
-        pageCurlView.SetCurlMode(PageCurlView.CURLMODE_SIMPLE);
-        pageCurlView.setCurlSpeed(10);
+        pageCurlView.setCurlMode(PageCurlView.CURLMODE_SIMPLE);
+        pageCurlView.setCurlSpeed(30);
 
         book = new ArrayList<>();
         for (int i = 0; i < 10; i++) {

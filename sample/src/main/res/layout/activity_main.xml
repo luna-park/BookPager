@@ -16,7 +16,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <app.num.numandroidpagecurleffect.PageCurlView
+    <org.lunapark.dev.bookpagerlib.PageCurlView
         android:id="@+id/pager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

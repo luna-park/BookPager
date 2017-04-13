@@ -1,1 +1,1 @@
-include ':sample', ':androidPageCurlEffect'
+include ':sample', ':bookpagerlib'
