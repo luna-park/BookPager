@@ -1,56 +1,61 @@
-package org.lunapark.dev.bookpager;
+package org.lunapark.dev.bookpagerlib;
 
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.view.Display;
 
 import java.util.List;
 
 /**
+ * Book pages
  * Created by znak on 13.04.2017.
  */
 
 public class BookPage {
 
-    private Bitmap bitmap;
-    private Context context;
+    private Bitmap bitmapOdd, bitmapEven;
     private int width, height;
     private List<String> book;
     private int fontSize;
-//    private Typeface tanger;
 
-    public BookPage(Activity activity, List<String> book) {
-        context = activity.getApplicationContext();
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        width = size.x;
-        height = size.y;
-        fontSize = height / 32;
+
+    public BookPage(List<String> book) {
         this.book = book;
-        //        tanger = Typeface.createFromAsset(context.getAssets(),"fonts/UnifrakturCook-Bold.ttf");
     }
 
+    public void setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        init();
+    }
+
+    private void init() {
+        fontSize = height / 32;
+        createBitmaps();
+    }
+
+    private void createBitmaps() {
+        bitmapOdd = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmapEven = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+    }
 
     public Bitmap getPage(int pageNum) {
-        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = bitmapEven;
+        if ((pageNum & 1) == 0) {
+            bitmap = bitmapOdd;
+        }
+
         bitmap.eraseColor(Color.WHITE);
 
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setSubpixelText(true);
-//        paint.setTypeface(tanger);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLACK);
         paint.setTextSize(fontSize);
         paint.setTextAlign(Paint.Align.LEFT);
-//        canvas.drawText(s, width / 2, height / 2, paint);
         addText(pageNum, canvas, paint);
         return bitmap;
     }
@@ -65,5 +70,15 @@ public class BookPage {
 
     }
 
+    public int size() {
+        return book.size();
+    }
 
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
+    }
 }

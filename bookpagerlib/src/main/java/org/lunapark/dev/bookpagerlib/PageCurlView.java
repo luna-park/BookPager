@@ -17,11 +17,15 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class PageCurlView extends View {
+
+    private BookPage bookPage;
+    private boolean showPageNumber = false;
+    private int backgroundPageColor = Color.rgb(200, 100, 100);
+
     /**
      * Our Log tag
      */
@@ -154,7 +158,7 @@ public class PageCurlView extends View {
     /**
      * LAGACY List of pages, this is just temporal
      */
-    private ArrayList<Bitmap> mPages;
+//    private ArrayList<Bitmap> mPages;
 
     /**
      * LAGACY Current selected page
@@ -170,9 +174,9 @@ public class PageCurlView extends View {
      * Inner class used to represent a 2D point.
      */
     private class Vector2D {
-        public float x, y;
+        float x, y;
 
-        public Vector2D(float x, float y) {
+        Vector2D(float x, float y) {
             this.x = x;
             this.y = y;
         }
@@ -251,13 +255,13 @@ public class PageCurlView extends View {
     /**
      * Inner class used to make a fixed timed animation of the curl effect.
      */
-    class FlipAnimationHandler extends Handler {
+    private class FlipAnimationHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            PageCurlView.this.FlipAnimationStep();
+            PageCurlView.this.flipAnimationStep();
         }
 
-        public void sleep(long millis) {
+        void sleep(long millis) {
             this.removeMessages(0);
             sendMessageDelayed(obtainMessage(0), millis);
         }
@@ -267,26 +271,18 @@ public class PageCurlView extends View {
         this.mCurlSpeed = mCurlSpeed;
     }
 
-    public void setCurlViewBitmap(List<Bitmap> pages) {
-        // LEGACY PAGE HANDLING!
-        // Create pages
-        mPages = new ArrayList<Bitmap>();
-        mPages.addAll(pages);
-
-        // Create some sample images
-        mForeground = mPages.get(0);
-        mBackground = mPages.get(1);
+    public void setBook(List<String> book) {
+        bookPage = new BookPage(book);
     }
+
 
     /**
      * Base
-     *
-     * @param context
      */
     public PageCurlView(Context context) {
         super(context);
         init(context);
-        ResetClipEdge();
+        resetClipEdge();
     }
 
     /**
@@ -313,7 +309,7 @@ public class PageCurlView extends View {
             a.recycle();
         }
 
-        ResetClipEdge();
+        resetClipEdge();
     }
 
     /**
@@ -351,7 +347,7 @@ public class PageCurlView extends View {
 
         // Create our edge paint
         mCurlEdgePaint = new Paint();
-        mCurlEdgePaint.setColor(Color.LTGRAY);
+        mCurlEdgePaint.setColor(backgroundPageColor);
         mCurlEdgePaint.setAntiAlias(true);
         mCurlEdgePaint.setStyle(Style.FILL);
         mCurlEdgePaint.setShadowLayer(10, -5, 5, 0x99000000);
@@ -367,7 +363,7 @@ public class PageCurlView extends View {
     /**
      * Reset points to it's initial clip edge state
      */
-    public void ResetClipEdge() {
+    public void resetClipEdge() {
         // Set our base movement
         mMovement.x = mInitialEdgeOffset;
         mMovement.y = mInitialEdgeOffset;
@@ -389,6 +385,7 @@ public class PageCurlView extends View {
         mOrigin = new Vector2D(this.getWidth(), 0);
     }
 
+
     /**
      * Return the context which created use. Can return null if the
      * context has been erased.
@@ -402,7 +399,7 @@ public class PageCurlView extends View {
      *
      * @return TRUE if the mode is CURLMODE_DYNAMIC, FALSE otherwise
      */
-    public boolean IsCurlModeDynamic() {
+    public boolean isCurlModeDynamic() {
         return mCurlMode == CURLMODE_DYNAMIC;
     }
 
@@ -423,7 +420,7 @@ public class PageCurlView extends View {
      *
      * @return int - Curl speed in px/frame
      */
-    public int GetCurlSpeed() {
+    public int getCurlSpeed() {
         return mCurlSpeed;
     }
 
@@ -433,7 +430,7 @@ public class PageCurlView extends View {
      * @param updateRate - Fixed animation update rate in fps
      * @throws IllegalArgumentException if updateRate < 1
      */
-    public void SetUpdateRate(int updateRate) {
+    public void setUpdateRate(int updateRate) {
         if (updateRate < 1)
             throw new IllegalArgumentException("updateRate must be greated than 0");
         mUpdateRate = updateRate;
@@ -628,7 +625,7 @@ public class PageCurlView extends View {
                         previousView();
 
                         // Set new movement
-                        mMovement.x = IsCurlModeDynamic() ? width << 1 : width;
+                        mMovement.x = isCurlModeDynamic() ? width << 1 : width;
                         mMovement.y = mInitialEdgeOffset;
                     }
 
@@ -636,7 +633,7 @@ public class PageCurlView extends View {
                 case MotionEvent.ACTION_UP:
                     bUserMoves = false;
                     bFlipping = true;
-                    FlipAnimationStep();
+                    flipAnimationStep();
                     break;
                 case MotionEvent.ACTION_MOVE:
                     bUserMoves = true;
@@ -644,7 +641,7 @@ public class PageCurlView extends View {
                     // Get movement
                     mMovement.x -= mFinger.x - mOldMovement.x;
                     mMovement.y -= mFinger.y - mOldMovement.y;
-                    mMovement = CapMovement(mMovement, true);
+                    mMovement = capMovement(mMovement, true);
 
                     // Make sure the y value get's locked at a nice level
                     if (mMovement.y <= 1)
@@ -682,7 +679,7 @@ public class PageCurlView extends View {
      *                         current movement direction
      * @return Corrected point
      */
-    private Vector2D CapMovement(Vector2D point, boolean bMaintainMoveDir) {
+    private Vector2D capMovement(Vector2D point, boolean bMaintainMoveDir) {
         // Make sure we never ever move too much
         if (point.distance(mOrigin) > mFlipRadius) {
             if (bMaintainMoveDir) {
@@ -703,7 +700,7 @@ public class PageCurlView extends View {
     /**
      * Execute a step of the flip animation
      */
-    public void FlipAnimationStep() {
+    public void flipAnimationStep() {
         if (!bFlipping)
             return;
 
@@ -719,7 +716,7 @@ public class PageCurlView extends View {
 
         // Move us
         mMovement.x += curlSpeed;
-        mMovement = CapMovement(mMovement, false);
+        mMovement = capMovement(mMovement, false);
 
         // Create values
         DoPageCurl();
@@ -731,7 +728,7 @@ public class PageCurlView extends View {
                 //SwapViews();
                 nextView();
             }
-            ResetClipEdge();
+            resetClipEdge();
 
             // Create values
             DoPageCurl();
@@ -751,13 +748,13 @@ public class PageCurlView extends View {
      */
     private void DoPageCurl() {
         if (bFlipping) {
-            if (IsCurlModeDynamic())
+            if (isCurlModeDynamic())
                 doDynamicCurl();
             else
                 doSimpleCurl();
 
         } else {
-            if (IsCurlModeDynamic())
+            if (isCurlModeDynamic())
                 doDynamicCurl();
             else
                 doSimpleCurl();
@@ -861,25 +858,15 @@ public class PageCurlView extends View {
     }
 
     /**
-     * Swap between the fore and back-ground.
-     */
-    @Deprecated
-    private void SwapViews() {
-        Bitmap temp = mForeground;
-        mForeground = mBackground;
-        mBackground = temp;
-    }
-
-    /**
      * Swap to next view
      */
     private void nextView() {
         int foreIndex = mIndex + 1;
-        if (foreIndex >= mPages.size()) {
+        if (foreIndex >= bookPage.size()) {
             foreIndex = 0;
         }
         int backIndex = foreIndex + 1;
-        if (backIndex >= mPages.size()) {
+        if (backIndex >= bookPage.size()) {
             backIndex = 0;
         }
         mIndex = foreIndex;
@@ -893,7 +880,7 @@ public class PageCurlView extends View {
         int backIndex = mIndex;
         int foreIndex = backIndex - 1;
         if (foreIndex < 0) {
-            foreIndex = mPages.size() - 1;
+            foreIndex = bookPage.size() - 1;
         }
         mIndex = foreIndex;
         setViews(foreIndex, backIndex);
@@ -906,8 +893,8 @@ public class PageCurlView extends View {
      * @param background - Background view index
      */
     private void setViews(int foreground, int background) {
-        mForeground = mPages.get(foreground);
-        mBackground = mPages.get(background);
+        mForeground = bookPage.getPage(foreground);
+        mBackground = bookPage.getPage(background);
     }
 
     //---------------------------------------------------------------
@@ -926,7 +913,7 @@ public class PageCurlView extends View {
         // We need to initialize all size data when we first draw the view
         if (!bViewDrawn) {
             bViewDrawn = true;
-            onFirstDrawEvent(canvas);
+            onFirstDrawEvent();
         }
 
         canvas.drawColor(Color.WHITE);
@@ -969,36 +956,29 @@ public class PageCurlView extends View {
 
     /**
      * Called on the first draw event of the view
-     *
-     * @param canvas
      */
-    protected void onFirstDrawEvent(Canvas canvas) {
-
+    protected void onFirstDrawEvent() {
         mFlipRadius = getWidth();
-
-        ResetClipEdge();
+        bookPage.setSize(getWidth(), getHeight());
+        mForeground = bookPage.getPage(0);
+        mBackground = bookPage.getPage(1);
+        resetClipEdge();
         DoPageCurl();
     }
 
     /**
      * Draw the foreground
-     *
-     * @param canvas
-     * @param rect
-     * @param paint
      */
     private void drawForeground(Canvas canvas, Rect rect, Paint paint) {
         canvas.drawBitmap(mForeground, null, rect, paint);
 
         // Draw the page number (first page is 1 in real life :D
         // there is no page number 0 hehe)
-//        drawPageNum(canvas, mIndex);
+        drawPageNum(canvas, mIndex);
     }
 
     /**
      * Create a Path used as a mask to draw the background page
-     *
-     * @return
      */
     private Path createBackgroundPath() {
         Path path = new Path();
@@ -1012,10 +992,6 @@ public class PageCurlView extends View {
 
     /**
      * Draw the background image.
-     *
-     * @param canvas
-     * @param rect
-     * @param paint
      */
     private void drawBackground(Canvas canvas, Rect rect, Paint paint) {
         Path mask = createBackgroundPath();
@@ -1034,8 +1010,6 @@ public class PageCurlView extends View {
 
     /**
      * Creates a path used to draw the curl edge in.
-     *
-     * @return
      */
     private Path createCurlEdgePath() {
         Path path = new Path();
@@ -1049,8 +1023,6 @@ public class PageCurlView extends View {
 
     /**
      * Draw the curl page edge
-     *
-     * @param canvas
      */
     private void drawCurlEdge(Canvas canvas) {
         Path path = createCurlEdgePath();
@@ -1059,14 +1031,15 @@ public class PageCurlView extends View {
 
     /**
      * Draw page num (let this be a bit more custom)
-     *
-     * @param canvas
-     * @param pageNum
      */
     private void drawPageNum(Canvas canvas, int pageNum) {
-        mTextPaint.setColor(Color.DKGRAY);
-        String pageNumText = "- " + pageNum + " -";
-        drawCentered(canvas, pageNumText, canvas.getHeight() - mTextPaint.getTextSize() - 5, mTextPaint, mTextPaintShadow);
+        if (showPageNumber) {
+            mTextPaint.setColor(Color.DKGRAY);
+            pageNum++;
+            String pageNumText = "- " + pageNum + " -";
+            drawCentered(canvas, pageNumText, canvas.getHeight() - mTextPaint.getTextSize() - 5,
+                    mTextPaint, mTextPaintShadow);
+        }
     }
 
     //---------------------------------------------------------------
@@ -1086,12 +1059,6 @@ public class PageCurlView extends View {
 
     /**
      * Draw a text with a nice shadow centered in the X axis
-     *
-     * @param canvas
-     * @param text
-     * @param y
-     * @param textPain
-     * @param shadowPaint
      */
     public static void drawCentered(Canvas canvas, String text, float y, Paint textPain, Paint shadowPaint) {
         float posx = (canvas.getWidth() - textPain.measureText(text)) / 2;
@@ -1100,8 +1067,6 @@ public class PageCurlView extends View {
 
     /**
      * Draw debug info
-     *
-     * @param canvas
      */
     private void drawDebug(Canvas canvas) {
         float posX = 10;
@@ -1172,4 +1137,11 @@ public class PageCurlView extends View {
         return posY + 15;
     }
 
+    public boolean isShowPageNumber() {
+        return showPageNumber;
+    }
+
+    public void setShowPageNumber(boolean showPageNumber) {
+        this.showPageNumber = showPageNumber;
+    }
 }
