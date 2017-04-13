@@ -19,12 +19,14 @@ import android.view.View;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import static android.graphics.Color.LTGRAY;
+
 
 public class PageCurlView extends View {
 
     private BookPage bookPage;
     private boolean showPageNumber = false;
-    private int backgroundPageColor = Color.rgb(200, 100, 100);
+    private int backgroundPageColor = Color.rgb(235, 235, 205);
 
     /**
      * Our Log tag
@@ -183,7 +185,6 @@ public class PageCurlView extends View {
 
         @Override
         public String toString() {
-            // TODO Auto-generated method stub
             return "(" + this.x + "," + this.y + ")";
         }
 
@@ -304,6 +305,9 @@ public class PageCurlView extends View {
             mUpdateRate = a.getInt(R.styleable.PageCurlView_updateRate, mUpdateRate);
             mInitialEdgeOffset = a.getInt(R.styleable.PageCurlView_initialEdgeOffset, mInitialEdgeOffset);
             mCurlMode = a.getInt(R.styleable.PageCurlView_curlMode, mCurlMode);
+
+            // TODO set page back color
+            int colorRef = a.getInt(R.styleable.PageCurlView_pageBackColor, backgroundPageColor);
 
             // recycle object (so it can be used by others)
             a.recycle();
@@ -1096,7 +1100,7 @@ public class PageCurlView extends View {
         posY = debugDrawPoint(canvas, "C", mC, Color.BLUE, posX, posY);
         posY = debugDrawPoint(canvas, "D", mD, Color.CYAN, posX, posY);
         posY = debugDrawPoint(canvas, "E", mE, Color.YELLOW, posX, posY);
-        posY = debugDrawPoint(canvas, "F", mF, Color.LTGRAY, posX, posY);
+        posY = debugDrawPoint(canvas, "F", mF, LTGRAY, posX, posY);
         posY = debugDrawPoint(canvas, "Mov", mMovement, Color.DKGRAY, posX, posY);
         posY = debugDrawPoint(canvas, "Origin", mOrigin, Color.MAGENTA, posX, posY);
         posY = debugDrawPoint(canvas, "Finger", mFinger, Color.GREEN, posX, posY);

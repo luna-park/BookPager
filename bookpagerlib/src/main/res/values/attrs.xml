@@ -14,5 +14,6 @@
 			<enum name="Simple" value="0" />
 			<enum name="Dynamic" value="1" />
 		</attr>
+		<attr name="pageBackColor" format="reference" />
 	</declare-styleable>
 </resources>
