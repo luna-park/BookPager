@@ -2,12 +2,14 @@ package org.lunapark.dev.bookpager;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import org.lunapark.dev.bookpagerlib.ChangePageListener;
 import org.lunapark.dev.bookpagerlib.PageCurlView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity implements ChangePageListener {
@@ -18,17 +20,15 @@ public class MainActivity extends Activity implements ChangePageListener {
         setContentView(R.layout.activity_main);
 
         // Create sample book
-//        List<String> book = new ArrayList<>();
-//        for (int i = 0; i < 10; i++) {
-//            String page = "Page: " + i + " Content:\n" + "blablabqwertyuiop";
-//            book.add(page);
-//        }
-
-        GetBook getBook = new GetBook();
-        List<String> book = getBook.get(this);
+        List<String> book = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            String page = "Page: " + i + " Content:\n" + "blablabqwertyuiop";
+            book.add(page);
+        }
 
         // Define page curl view and set content
         final PageCurlView pageCurlView = (PageCurlView) findViewById(R.id.pager);
+//        pageCurlView.setBook(book);
         pageCurlView.setBook(book, 59);
         pageCurlView.setOnChangePageListener(this);
 
@@ -49,6 +49,6 @@ public class MainActivity extends Activity implements ChangePageListener {
 
     @Override
     public void onPageChange(int pageNum) {
-//        Log.e("Book Pager", "Page: " + pageNum);
+        Log.e("Book Pager", "Page: " + pageNum);
     }
 }
