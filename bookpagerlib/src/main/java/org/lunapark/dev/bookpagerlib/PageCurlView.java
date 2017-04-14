@@ -972,7 +972,7 @@ public class PageCurlView extends View {
         bookPage.setSize(getWidth(), getHeight());
         mForeground = bookPage.getPage(0);
         mBackground = bookPage.getPage(1);
-        changePageListener.onPageChange(mIndex);
+//        changePageListener.onPageChange(mIndex);
         resetClipEdge();
         DoPageCurl();
     }
