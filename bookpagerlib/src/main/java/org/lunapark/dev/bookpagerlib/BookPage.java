@@ -80,7 +80,7 @@ public class BookPage {
         if (fontAdaptiveWidth) {
 
             if (rows > maxSize) {
-                fontSize = height / rows;
+                fontSize = height / rows * 8 / 10;
             } else {
                 fontSize = width / maxSize * 3 / 2;
             }
