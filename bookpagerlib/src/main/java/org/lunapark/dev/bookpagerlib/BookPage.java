@@ -87,20 +87,12 @@ public class BookPage {
         for (int i = 0; i < rows; i++) {
             String row = strings[i];
             paint.setTextSize(fontSize);
-            canvas.drawText(row, 0, i * fontSize + deltaY, paint);
+            canvas.drawText(row, fontSize, i * fontSize + deltaY, paint);
         }
 
     }
 
     int size() {
         return book.size();
-    }
-
-    public int getFontSize() {
-        return fontSize;
-    }
-
-    public void setFontSize(int fontSize) {
-        this.fontSize = fontSize;
     }
 }

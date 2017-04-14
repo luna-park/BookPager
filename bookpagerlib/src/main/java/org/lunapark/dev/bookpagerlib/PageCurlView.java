@@ -879,7 +879,8 @@ public class PageCurlView extends View {
         if (foreIndex >= bookPage.size()) {
             foreIndex = 0;
         }
-        int backIndex = foreIndex + 1;
+
+        int backIndex = foreIndex;
         if (backIndex >= bookPage.size()) {
             backIndex = 0;
         }
@@ -888,7 +889,7 @@ public class PageCurlView extends View {
     }
 
     /**
-     * Swap to previous view
+     * FIXME Swap to previous view
      */
     private void previousView() {
         int backIndex = mIndex;
