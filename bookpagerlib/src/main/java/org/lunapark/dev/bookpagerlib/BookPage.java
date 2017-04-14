@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class BookPage {
     private int width, height;
     private List<String> book;
     private int fontSize;
+    private boolean fontAdaptiveWidth;
 
 
     BookPage(List<String> book, int fontSize) {
@@ -32,7 +34,10 @@ public class BookPage {
     }
 
     private void init() {
-        if (fontSize == 0) fontSize = height / 32;
+        if (fontSize == 0) {
+            fontAdaptiveWidth = true;
+//            fontSize = height / 32;
+        }
         createBitmaps();
     }
 
@@ -55,7 +60,7 @@ public class BookPage {
         paint.setSubpixelText(true);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLACK);
-        paint.setTextSize(fontSize);
+
         paint.setTextAlign(Paint.Align.LEFT);
         addText(pageNum, canvas, paint);
         return bitmap;
@@ -64,9 +69,25 @@ public class BookPage {
     private void addText(int index, Canvas canvas, Paint paint) {
         String s = book.get(index);
         String[] strings = s.split("\n");
-        for (int i = 0; i < strings.length; i++) {
+        int rows = strings.length;
+
+        int maxSize = 0;
+        for (String string : strings) {
+            int rowSize = string.length();
+            if (rowSize > maxSize) maxSize = rowSize;
+        }
+
+        if (fontAdaptiveWidth) {
+            fontSize = width / maxSize * 3 / 2;
+            Log.e("BookPage", "Font size: " + fontSize);
+        }
+
+        int deltaY = (height - rows * fontSize) / 2;
+
+        for (int i = 0; i < rows; i++) {
             String row = strings[i];
-            canvas.drawText(row, 0, i * fontSize + fontSize, paint);
+            paint.setTextSize(fontSize);
+            canvas.drawText(row, 0, i * fontSize + deltaY, paint);
         }
 
     }

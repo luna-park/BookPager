@@ -7,3 +7,5 @@
 /build
 /captures
 .externalNativeBuild
+/sample/src/main/res/raw/
+/sample/src/main/res/raw/autopoet.json
