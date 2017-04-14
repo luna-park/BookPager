@@ -28,6 +28,7 @@ import static android.graphics.Color.LTGRAY;
 public class PageCurlView extends View {
 
     private BookPage bookPage;
+    private List<String> book;
     private boolean showPageNumber = false;
     //    private int backgroundPageColor = Color.rgb(235, 235, 205);
     private int backgroundPageColor = Color.rgb(235, 235, 235);
@@ -192,11 +193,13 @@ public class PageCurlView extends View {
 
 
     public void setBook(List<String> book) {
-        bookPage = new BookPage(book);
+        this.book = book;
+        bookPage = new BookPage();
     }
 
     public void setBook(List<String> book, int startPage) {
-        bookPage = new BookPage(book);
+        this.book = book;
+        bookPage = new BookPage();
         mIndex = startPage;
     }
 
@@ -796,12 +799,12 @@ public class PageCurlView extends View {
      */
     private void nextView() {
         int foreIndex = mIndex + 1;
-        if (foreIndex >= bookPage.size()) {
+        if (foreIndex >= book.size()) {
             foreIndex = 0;
         }
 
         int backIndex = foreIndex + 1;
-        if (backIndex >= bookPage.size()) {
+        if (backIndex >= book.size()) {
             backIndex = 0;
         }
         mIndex = foreIndex;
@@ -809,23 +812,13 @@ public class PageCurlView extends View {
     }
 
     /**
-     * FIXME Swap to previous view
+     * Swap to previous view
      */
     private void previousView() {
-//        int foreIndex = mIndex - 1;
-//        if (foreIndex < 0 ) {
-//            foreIndex = bookPage.size() - 1;
-//        }
-//
-//        int backIndex = foreIndex + 1;
-//        if (backIndex >= bookPage.size()) {
-//            backIndex = 0;
-//        }
-
         int backIndex = mIndex;
         int foreIndex = backIndex - 1;
         if (foreIndex < 0) {
-            foreIndex = bookPage.size() - 1;
+            foreIndex = book.size() - 1;
         }
         mIndex = foreIndex;
         setViews(foreIndex, backIndex);
@@ -840,8 +833,8 @@ public class PageCurlView extends View {
      * @param background - Background view index
      */
     private void setViews(int foreground, int background) {
-        mForeground = bookPage.getPage(foreground, true);
-        mBackground = bookPage.getPage(background, false);
+        mForeground = bookPage.getPage(book.get(foreground), true);
+        mBackground = bookPage.getPage(book.get(background), false);
     }
 
     //---------------------------------------------------------------
@@ -863,7 +856,7 @@ public class PageCurlView extends View {
             onFirstDrawEvent();
         }
 
-//        canvas.drawColor(Color.RED);
+        canvas.drawColor(Color.WHITE);
 
 
         // Curl pages
@@ -903,34 +896,6 @@ public class PageCurlView extends View {
         canvas.restore();
     }
 
-    private void zDrawPath(Canvas canvas, Paint paint, int color) {
-        Path path = new Path();
-        path.moveTo(mA.x, mA.y);
-
-        path.lineTo(mB.x, mB.y);
-        path.lineTo(mC.x, mC.y);
-        path.lineTo(mD.x, mD.y);
-//        path.lineTo(mA.x, mA.y);
-
-        paint.setColor(color);
-        paint.setStrokeWidth(1);
-        canvas.drawPath(path, paint);
-
-    }
-
-    private void zDrawVectorz(Vector2D v1, Vector2D v2, Canvas canvas, Paint paint, int color) {
-        paint.setColor(color);
-        paint.setStrokeWidth(5);
-        canvas.drawCircle(v1.x, v1.y, 5, paint);
-        canvas.drawCircle(v2.x, v2.y, 5, paint);
-        canvas.drawLine(v1.x, v1.y, v2.x, v2.y, paint);
-    }
-
-    private void zDrawPoints(Vector2D v1, Canvas canvas, Paint paint, int color) {
-        paint.setColor(color);
-        paint.setStrokeWidth(5);
-        canvas.drawCircle(v1.x, v1.y, 5, paint);
-    }
 
     /**
      * Called on the first draw event of the view
@@ -938,8 +903,7 @@ public class PageCurlView extends View {
     protected void onFirstDrawEvent() {
         mFlipRadius = getWidth();
         bookPage.setViewSize(getWidth(), getHeight());
-        mForeground = bookPage.getPage(mIndex, true);
-        mBackground = bookPage.getPage(mIndex + 1, false);
+        updatePages();
         resetClipEdge();
         DoPageCurl();
     }
@@ -982,10 +946,7 @@ public class PageCurlView extends View {
         // Draw the page number (first page is 1 in real life :D
         // there is no page number 0 hehe)
         drawPageNum(canvas, mIndex);
-
         canvas.restore();
-
-
     }
 
     /**
@@ -1126,27 +1087,24 @@ public class PageCurlView extends View {
     }
 
     public void goToPage(int pageNum) {
-        int n = 0;
-        if (pageNum >= bookPage.size()) {
-            pageNum = bookPage.size() - 1;
-            n = 0;
-        }
-        if (pageNum < 0) {
-            pageNum = 0;
-            n = 1;
-        }
         mIndex = pageNum;
-        mForeground = bookPage.getPage(pageNum, true);
-        mBackground = bookPage.getPage(n, false);
-//        resetClipEdge();
-//        DoPageCurl();
+        updatePages();
         invalidate();
     }
-//    public int getFontSize() {
-//        return bookPage.getFontSize();
-//    }
-//
-//    public void setFontSize(int fontSize) {
-//        bookPage.setFontSize(fontSize);
-//    }
+
+    private void updatePages() {
+        int indexBackPage = mIndex + 1;
+        if (mIndex >= book.size()) {
+            mIndex = book.size() - 1;
+            indexBackPage = 0;
+        }
+
+        if (mIndex < 0) {
+            mIndex = 0;
+            indexBackPage = 1;
+        }
+
+        mForeground = bookPage.getPage(book.get(mIndex), true);
+        mBackground = bookPage.getPage(book.get(indexBackPage), false);
+    }
 }

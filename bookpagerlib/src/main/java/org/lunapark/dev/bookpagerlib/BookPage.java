@@ -4,28 +4,18 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
-
-import java.util.List;
 
 /**
- * Book pages
+ * Book page
  * Created by znak on 13.04.2017.
  */
 
 public class BookPage {
 
-    private String TAG = "BookPage";
     private Bitmap bitmapForeground, bitmapBackground;
     private int width, height;
-    private List<String> book;
     private int fontSize;
     private boolean fontAdaptiveWidth;
-
-
-    BookPage(List<String> book) {
-        this.book = book;
-    }
 
     void setViewSize(int width, int height) {
         this.width = width;
@@ -36,7 +26,6 @@ public class BookPage {
     private void init() {
         if (fontSize == 0) {
             fontAdaptiveWidth = true;
-//            fontSize = height / 32;
         }
         createBitmaps();
     }
@@ -46,9 +35,9 @@ public class BookPage {
         bitmapBackground = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
     }
 
-    Bitmap getPage(int pageNum, boolean fore) {
+    Bitmap getPage(String pageContent, boolean isForegroudPage) {
         Bitmap bitmap;
-        if (fore) {
+        if (isForegroudPage) {
             bitmap = bitmapForeground;
         } else {
             bitmap = bitmapBackground;
@@ -64,12 +53,12 @@ public class BookPage {
         paint.setColor(Color.BLACK);
 
         paint.setTextAlign(Paint.Align.LEFT);
-        addText(pageNum, canvas, paint);
+        addText(pageContent, canvas, paint);
         return bitmap;
     }
 
-    private void addText(int index, Canvas canvas, Paint paint) {
-        String s = book.get(index);
+    private void addText(String pageContent, Canvas canvas, Paint paint) {
+        String s = pageContent;
         String[] strings = s.split("\n");
         int rows = strings.length;
 
@@ -79,16 +68,13 @@ public class BookPage {
             if (rowSize > maxSize) maxSize = rowSize;
         }
 
+        // FIXME Magic numbers
         if (fontAdaptiveWidth) {
-
             if (rows > maxSize - 7) {
                 fontSize = Math.round(height / rows * 0.8f);
             } else {
                 fontSize = Math.round(width / maxSize * 1.6f);
             }
-
-            Log.e(TAG, String.format("Page: %s / %s; Font size: %s; Rows: %s; maxSize: %s",
-                    index, book.size(), fontSize, rows, maxSize));
         }
 
         int deltaY = (height - rows * fontSize) / 2;
@@ -100,9 +86,5 @@ public class BookPage {
             canvas.drawText(row, margin, i * fontSize + deltaY, paint);
         }
 
-    }
-
-    int size() {
-        return book.size();
     }
 }

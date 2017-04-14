@@ -41,7 +41,7 @@ public class MainActivity extends Activity implements ChangePageListener {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pageCurlView.goToPage(0);
+                pageCurlView.goToPage(500);
             }
         });
 
