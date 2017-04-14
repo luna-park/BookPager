@@ -2,7 +2,6 @@ package org.lunapark.dev.bookpager;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -50,6 +49,6 @@ public class MainActivity extends Activity implements ChangePageListener {
 
     @Override
     public void onPageChange(int pageNum) {
-        Log.e("Book Pager", "Page: " + pageNum);
+//        Log.e("Book Pager", "Page: " + pageNum);
     }
 }

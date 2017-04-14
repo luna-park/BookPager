@@ -824,7 +824,7 @@ public class PageCurlView extends View {
 
         int backIndex = mIndex;
         int foreIndex = backIndex - 1;
-        if(foreIndex < 0) {
+        if (foreIndex < 0) {
             foreIndex = bookPage.size() - 1;
         }
         mIndex = foreIndex;
@@ -840,8 +840,8 @@ public class PageCurlView extends View {
      * @param background - Background view index
      */
     private void setViews(int foreground, int background) {
-        mForeground = bookPage.getPage(foreground);
-        mBackground = bookPage.getPage(background);
+        mForeground = bookPage.getPage(foreground, true);
+        mBackground = bookPage.getPage(background, false);
     }
 
     //---------------------------------------------------------------
@@ -938,8 +938,8 @@ public class PageCurlView extends View {
     protected void onFirstDrawEvent() {
         mFlipRadius = getWidth();
         bookPage.setViewSize(getWidth(), getHeight());
-        mForeground = bookPage.getPage(mIndex);
-        mBackground = bookPage.getPage(mIndex + 1);
+        mForeground = bookPage.getPage(mIndex, true);
+        mBackground = bookPage.getPage(mIndex + 1, false);
         resetClipEdge();
         DoPageCurl();
     }
@@ -1136,8 +1136,8 @@ public class PageCurlView extends View {
             n = 1;
         }
         mIndex = pageNum;
-        mForeground = bookPage.getPage(pageNum);
-        mBackground = bookPage.getPage(n);
+        mForeground = bookPage.getPage(pageNum, true);
+        mBackground = bookPage.getPage(n, false);
 //        resetClipEdge();
 //        DoPageCurl();
         invalidate();

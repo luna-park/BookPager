@@ -15,7 +15,8 @@ import java.util.List;
 
 public class BookPage {
 
-    private Bitmap bitmapOdd, bitmapEven;
+    private String TAG = "BookPage";
+    private Bitmap bitmapForeground, bitmapBackground;
     private int width, height;
     private List<String> book;
     private int fontSize;
@@ -41,14 +42,16 @@ public class BookPage {
     }
 
     private void createBitmaps() {
-        bitmapOdd = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        bitmapEven = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmapForeground = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmapBackground = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
     }
 
-    Bitmap getPage(int pageNum) {
-        Bitmap bitmap = bitmapEven;
-        if ((pageNum & 1) != 0) {
-            bitmap = bitmapOdd;
+    Bitmap getPage(int pageNum, boolean fore) {
+        Bitmap bitmap;
+        if (fore) {
+            bitmap = bitmapForeground;
+        } else {
+            bitmap = bitmapBackground;
         }
 
         bitmap.eraseColor(Color.WHITE);
@@ -84,8 +87,8 @@ public class BookPage {
                 fontSize = Math.round(width / maxSize * 1.6f);
             }
 
-            Log.e("BookPage", String.format("Page: %s; Font size: %s; Rows: %s; maxSize: %s",
-                    index, fontSize, rows, maxSize));
+            Log.e(TAG, String.format("Page: %s / %s; Font size: %s; Rows: %s; maxSize: %s",
+                    index, book.size(), fontSize, rows, maxSize));
         }
 
         int deltaY = (height - rows * fontSize) / 2;
