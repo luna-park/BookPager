@@ -27,6 +27,7 @@ public class PageCurlView extends View {
     private BookPage bookPage;
     private boolean showPageNumber = false;
     private int backgroundPageColor = Color.rgb(235, 235, 205);
+    private ChangePageListener changePageListener;
 
     /**
      * Our Log tag
@@ -170,6 +171,10 @@ public class PageCurlView extends View {
     ///
     private Rect rect = new Rect();
     private Paint paint = new Paint();
+
+    public void setOnChangePageListener(ChangePageListener changePageListener) {
+        this.changePageListener = changePageListener;
+    }
 
 
     /**
@@ -517,7 +522,7 @@ public class PageCurlView extends View {
      *
      * @param bFlag - boolean flag
      */
-    public void SetEnableDebugMode(boolean bFlag) {
+    public void setEnableDebugMode(boolean bFlag) {
         bEnableDebugMode = bFlag;
     }
 
@@ -526,7 +531,7 @@ public class PageCurlView extends View {
      *
      * @return boolean - If TRUE debug mode is on, FALSE otherwise.
      */
-    public boolean IsDebugModeEnabled() {
+    public boolean isDebugModeEnabled() {
         return bEnableDebugMode;
     }
 
@@ -705,9 +710,9 @@ public class PageCurlView extends View {
      * Execute a step of the flip animation
      */
     public void flipAnimationStep() {
-        if (!bFlipping)
+        if (!bFlipping) {
             return;
-
+        }
         int width = getWidth();
 
         // No input when flipping
@@ -737,6 +742,7 @@ public class PageCurlView extends View {
             // Create values
             DoPageCurl();
 
+            changePageListener.onPageChange(mIndex);
             // Enable touch input after the next draw event
             bEnableInputAfterDraw = true;
         } else {
@@ -966,6 +972,7 @@ public class PageCurlView extends View {
         bookPage.setSize(getWidth(), getHeight());
         mForeground = bookPage.getPage(0);
         mBackground = bookPage.getPage(1);
+        changePageListener.onPageChange(mIndex);
         resetClipEdge();
         DoPageCurl();
     }
@@ -1110,7 +1117,7 @@ public class PageCurlView extends View {
         canvas.save();
 		Vector2D center = new Vector2D(getWidth()/2,getHeight()/2);
 	    //canvas.rotate(315,center.x,center.y);
-	    
+
 	    // Test each lines
 		//float radius = mA.distance(mD)/2.f;
 	    //float radius = mA.distance(mE)/2.f;

@@ -31,7 +31,7 @@ public class BookPage {
     }
 
     private void init() {
-        fontSize = height / 32;
+        fontSize = height / 8;
         createBitmaps();
     }
 
