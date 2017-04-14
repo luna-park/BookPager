@@ -30,7 +30,7 @@ public class PageCurlView extends View {
     private int backgroundPageColor = Color.rgb(235, 235, 205);
     private ChangePageListener changePageListener;
 
-    /**
+    /*
      * Our Log tag
      */
     private final static String TAG = "PageCurlView";
@@ -39,133 +39,128 @@ public class PageCurlView extends View {
     private Paint mTextPaint;
     private TextPaint mTextPaintShadow;
 
-    /**
+    /*
      * Px / Draw call
      */
     private int mCurlSpeed = 62;
 
-    /**
+    /*
      * Fixed update time used to create a smooth curl animation
      */
     private int mUpdateRate;
 
-    /**
+    /*
      * The initial offset for x and y axis movements
      */
     private int mInitialEdgeOffset;
 
-    /**
+    /*
      * The mode we will use
      */
     private int mCurlMode;
 
-    /**
+    /*
      * Simple curl mode. Curl target will move only in one axis.
      */
     public static final int CURLMODE_SIMPLE = 0;
 
-    /**
+    /*
      * Dynamic curl mode. Curl target will move on both X and Y axis.
      */
     public static final int CURLMODE_DYNAMIC = 1;
 
-    /**
+    /*
      * Enable/Disable debug mode
      */
     private boolean bEnableDebugMode = false;
 
-    /**
+    /*
      * The context which owns us
      */
     private WeakReference<Context> mContext;
 
-    /**
+    /*
      * Handler used to auto flip time based
      */
     private FlipAnimationHandler mAnimationHandler;
 
-    /**
+    /*
      * Maximum radius a page can be flipped, by default it's the width of the view
      */
     private float mFlipRadius;
 
-    /**
+    /*
      * Point used to move
      */
     private Vector2D mMovement;
 
-    /**
+    /*
      * The finger position
      */
     private Vector2D mFinger;
 
-    /**
+    /*
      * Movement point form the last frame
      */
     private Vector2D mOldMovement;
 
-    /**
+    /*
      * Page curl edge
      */
     private Paint mCurlEdgePaint;
 
-    /**
+    /*
      * Our points used to define the current clipping paths in our draw call
      */
     private Vector2D mA, mB, mC, mD, mE, mF, mOldF, mOrigin;
 
-    /**
+    /*
      * Left and top offset to be applied when drawing
      */
 //    private int mCurrentLeft, mCurrentTop;
 
-    /**
+    /*
      * If false no draw call has been done
      */
     private boolean bViewDrawn;
 
-    /**
+    /*
      * Defines the flip direction that is currently considered
      */
     private boolean bFlipRight;
 
-    /**
+    /*
      * If TRUE we are currently auto-flipping
      */
     private boolean bFlipping;
 
-    /**
+    /*
      * TRUE if the user moves the pages
      */
     private boolean bUserMoves;
 
-    /**
+    /*
      * Used to control touch input blocking
      */
     private boolean bBlockTouchInput = false;
 
-    /**
+    /*
      * Enable input after the next draw event
      */
     private boolean bEnableInputAfterDraw = false;
 
-    /**
-     * LAGACY The current foreground
+    /*
+     * The current foreground
      */
     private Bitmap mForeground;
 
-    /**
-     * LAGACY The current background
+    /*
+     * The current background
      */
     private Bitmap mBackground;
 
-    /**
-     * LAGACY List of pages, this is just temporal
-     */
-//    private ArrayList<Bitmap> mPages;
-
-    /**
-     * LAGACY Current selected page
+    /*
+     * Current selected page
      */
     private int mIndex = 0;
 
@@ -175,88 +170,6 @@ public class PageCurlView extends View {
 
     public void setOnChangePageListener(ChangePageListener changePageListener) {
         this.changePageListener = changePageListener;
-    }
-
-
-    /**
-     * Inner class used to represent a 2D point.
-     */
-    private class Vector2D {
-        float x, y;
-
-        Vector2D(float x, float y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public String toString() {
-            return "(" + this.x + "," + this.y + ")";
-        }
-
-        public float length() {
-            return (float) Math.sqrt(x * x + y * y);
-        }
-
-        public float lengthSquared() {
-            return (x * x) + (y * y);
-        }
-
-        public boolean equals(Object o) {
-            if (o instanceof Vector2D) {
-                Vector2D p = (Vector2D) o;
-                return p.x == x && p.y == y;
-            }
-            return false;
-        }
-
-        public Vector2D reverse() {
-            return new Vector2D(-x, -y);
-        }
-
-        public Vector2D sum(Vector2D b) {
-            return new Vector2D(x + b.x, y + b.y);
-        }
-
-        public Vector2D sub(Vector2D b) {
-            return new Vector2D(x - b.x, y - b.y);
-        }
-
-        public float dot(Vector2D vec) {
-            return (x * vec.x) + (y * vec.y);
-        }
-
-        public float cross(Vector2D a, Vector2D b) {
-            return a.cross(b);
-        }
-
-        public float cross(Vector2D vec) {
-            return x * vec.y - y * vec.x;
-        }
-
-        public float distanceSquared(Vector2D other) {
-            float dx = other.x - x;
-            float dy = other.y - y;
-
-            return (dx * dx) + (dy * dy);
-        }
-
-        public float distance(Vector2D other) {
-            return (float) Math.sqrt(distanceSquared(other));
-        }
-
-        public float dotProduct(Vector2D other) {
-            return other.x * x + other.y * y;
-        }
-
-        public Vector2D normalize() {
-            float magnitude = (float) Math.sqrt(dotProduct(this));
-            return new Vector2D(x / magnitude, y / magnitude);
-        }
-
-        public Vector2D mult(float scalar) {
-            return new Vector2D(x * scalar, y * scalar);
-        }
     }
 
     /**
@@ -274,9 +187,6 @@ public class PageCurlView extends View {
         }
     }
 
-    public void setCurlSpeed(int mCurlSpeed) {
-        this.mCurlSpeed = mCurlSpeed;
-    }
 
     public void setBook(List<String> book) {
         bookPage = new BookPage(book, 0);
@@ -286,8 +196,7 @@ public class PageCurlView extends View {
         bookPage = new BookPage(book, fontSize);
     }
 
-
-    /**
+    /*
      * Base
      */
     public PageCurlView(Context context) {
@@ -329,7 +238,7 @@ public class PageCurlView extends View {
     /**
      * Initialize the view
      */
-    private final void init(Context context) {
+    private void init(Context context) {
         // Foreground text paint
         mTextPaint = new Paint();
         mTextPaint.setAntiAlias(true);
@@ -404,7 +313,7 @@ public class PageCurlView extends View {
      * Return the context which created use. Can return null if the
      * context has been erased.
      */
-    private Context GetContext() {
+    private Context getViewContext() {
         return mContext.get();
     }
 
@@ -423,11 +332,15 @@ public class PageCurlView extends View {
      * @param curlSpeed - New speed in px/frame
      * @throws IllegalArgumentException if curlspeed < 1
      */
-    public void SetCurlSpeed(int curlSpeed) {
+    public void setCurlSpeed(int curlSpeed) {
         if (curlSpeed < 1)
             throw new IllegalArgumentException("curlSpeed must be greated than 0");
         mCurlSpeed = curlSpeed;
     }
+
+//    public void setCurlSpeed(int mCurlSpeed) {
+//        this.mCurlSpeed = mCurlSpeed;
+//    }
 
     /**
      * Get the current curl speed
@@ -558,7 +471,7 @@ public class PageCurlView extends View {
      * @return The width of the view, honoring constraints from measureSpec
      */
     private int measureWidth(int measureSpec) {
-        int result = 0;
+        int result;
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
 
@@ -580,7 +493,7 @@ public class PageCurlView extends View {
      * @return The height of the view, honoring constraints from measureSpec
      */
     private int measureHeight(int measureSpec) {
-        int result = 0;
+        int result;
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
 
@@ -662,11 +575,7 @@ public class PageCurlView extends View {
                         mMovement.y = 1;
 
                     // Get movement direction
-                    if (mFinger.x < mOldMovement.x) {
-                        bFlipRight = true;
-                    } else {
-                        bFlipRight = false;
-                    }
+                    bFlipRight = mFinger.x < mOldMovement.x;
 
                     // Save old movement values
                     mOldMovement.x = mFinger.x;
@@ -747,7 +656,11 @@ public class PageCurlView extends View {
             // Create values
             DoPageCurl();
 
-            changePageListener.onPageChange(mIndex);
+            try {
+                changePageListener.onPageChange(mIndex);
+            } catch (NullPointerException e) {
+                Log.e(TAG, "ChangePageListener not defined");
+            }
             // Enable touch input after the next draw event
             bEnableInputAfterDraw = true;
         } else {
@@ -991,7 +904,6 @@ public class PageCurlView extends View {
         bookPage.setViewSize(getWidth(), getHeight());
         mForeground = bookPage.getPage(0);
         mBackground = bookPage.getPage(1);
-//        changePageListener.onPageChange(mIndex);
         resetClipEdge();
         DoPageCurl();
     }
@@ -1065,7 +977,7 @@ public class PageCurlView extends View {
     private void drawPageNum(Canvas canvas, int pageNum) {
         if (showPageNumber) {
             mTextPaint.setColor(Color.DKGRAY);
-            pageNum++;
+//            pageNum++;
             String pageNumText = "- " + pageNum + " -";
             drawCentered(canvas, pageNumText, canvas.getHeight() - mTextPaint.getTextSize() - 5,
                     mTextPaint, mTextPaintShadow);
