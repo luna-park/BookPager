@@ -48,7 +48,7 @@ public class BookPage {
 
     Bitmap getPage(int pageNum) {
         Bitmap bitmap = bitmapEven;
-        if ((pageNum & 1) == 0) {
+        if ((pageNum & 1) != 0) {
             bitmap = bitmapOdd;
         }
 
@@ -78,8 +78,14 @@ public class BookPage {
         }
 
         if (fontAdaptiveWidth) {
-            fontSize = width / maxSize * 3 / 2;
-            Log.e("BookPage", "Font size: " + fontSize);
+
+            if (rows > maxSize) {
+                fontSize = height / rows;
+            } else {
+                fontSize = width / maxSize * 3 / 2;
+            }
+
+            Log.e("BookPage", String.format("Font size: %s; Rows: %s; maxSize: %s", fontSize, rows, maxSize));
         }
 
         int deltaY = (height - rows * fontSize) / 2;

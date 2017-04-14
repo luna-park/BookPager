@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -880,7 +881,7 @@ public class PageCurlView extends View {
             foreIndex = 0;
         }
 
-        int backIndex = foreIndex;
+        int backIndex = foreIndex + 1;
         if (backIndex >= bookPage.size()) {
             backIndex = 0;
         }
@@ -892,13 +893,26 @@ public class PageCurlView extends View {
      * FIXME Swap to previous view
      */
     private void previousView() {
+
+
         int backIndex = mIndex;
+//        if (backIndex >= bookPage.size()) {
+//            backIndex = 0;
+//        }
         int foreIndex = backIndex - 1;
         if (foreIndex < 0) {
             foreIndex = bookPage.size() - 1;
         }
+
+//        int backIndex = mIndex;
+//        int foreIndex = backIndex - 1;
+//        if (foreIndex < 0) {
+//            foreIndex = bookPage.size() - 1;
+//        }
         mIndex = foreIndex;
         setViews(foreIndex, backIndex);
+
+        Log.e(TAG, String.format("index: %s\nfore: %s\nback: %s", mIndex, foreIndex, backIndex));
     }
 
     /**
@@ -931,7 +945,7 @@ public class PageCurlView extends View {
             onFirstDrawEvent();
         }
 
-        canvas.drawColor(Color.WHITE);
+        canvas.drawColor(Color.BLUE);
 
         // Curl pages
         //DoPageCurl();
@@ -966,7 +980,7 @@ public class PageCurlView extends View {
         }
 
         // Restore canvas
-        //canvas.restore();
+        canvas.restore();
     }
 
     /**
