@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import org.lunapark.dev.bookpagerlib.tools.Vector2D;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 

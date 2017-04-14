@@ -1,13 +1,14 @@
-package org.lunapark.dev.bookpagerlib;
+package org.lunapark.dev.bookpagerlib.tools;
 
 
 /**
  * Inner class used to represent a 2D point.
  */
-class Vector2D {
-    float x, y;
+public class Vector2D {
+    public float x;
+    public float y;
 
-    Vector2D(float x, float y) {
+    public Vector2D(float x, float y) {
         this.x = x;
         this.y = y;
     }

@@ -79,21 +79,23 @@ public class BookPage {
 
         if (fontAdaptiveWidth) {
 
-            if (rows > maxSize) {
-                fontSize = height / rows * 8 / 10;
+            if (rows > maxSize - 4) {
+                fontSize = Math.round(height / rows * 0.8f);
             } else {
-                fontSize = width / maxSize * 3 / 2;
+                fontSize = Math.round(width / maxSize * 1.6f);
             }
 
-            Log.e("BookPage", String.format("Font size: %s; Rows: %s; maxSize: %s", fontSize, rows, maxSize));
+            Log.e("BookPage", String.format("Page: %s; Font size: %s; Rows: %s; maxSize: %s",
+                    index, fontSize, rows, maxSize));
         }
 
         int deltaY = (height - rows * fontSize) / 2;
+        int margin = fontSize / 2;
 
         for (int i = 0; i < rows; i++) {
             String row = strings[i];
             paint.setTextSize(fontSize);
-            canvas.drawText(row, fontSize, i * fontSize + deltaY, paint);
+            canvas.drawText(row, margin, i * fontSize + deltaY, paint);
         }
 
     }
