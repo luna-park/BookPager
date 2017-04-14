@@ -22,9 +22,8 @@ public class BookPage {
     private boolean fontAdaptiveWidth;
 
 
-    BookPage(List<String> book, int fontSize) {
+    BookPage(List<String> book) {
         this.book = book;
-        this.fontSize = fontSize;
     }
 
     void setViewSize(int width, int height) {

@@ -191,11 +191,12 @@ public class PageCurlView extends View {
 
 
     public void setBook(List<String> book) {
-        bookPage = new BookPage(book, 0);
+        bookPage = new BookPage(book);
     }
 
-    public void setBook(List<String> book, int fontSize) {
-        bookPage = new BookPage(book, fontSize);
+    public void setBook(List<String> book, int startPage) {
+        bookPage = new BookPage(book);
+        mIndex = startPage;
     }
 
     /*
@@ -904,8 +905,8 @@ public class PageCurlView extends View {
     protected void onFirstDrawEvent() {
         mFlipRadius = getWidth();
         bookPage.setViewSize(getWidth(), getHeight());
-        mForeground = bookPage.getPage(0);
-        mBackground = bookPage.getPage(1);
+        mForeground = bookPage.getPage(mIndex);
+        mBackground = bookPage.getPage(mIndex + 1);
         resetClipEdge();
         DoPageCurl();
     }
@@ -1089,6 +1090,23 @@ public class PageCurlView extends View {
         this.showPageNumber = showPageNumber;
     }
 
+    public void goToPage(int pageNum) {
+        int n = 0;
+        if (pageNum >= bookPage.size()) {
+            pageNum = bookPage.size() - 1;
+            n = 0;
+        }
+        if (pageNum < 0) {
+            pageNum = 0;
+            n = 1;
+        }
+        mIndex = pageNum;
+        mForeground = bookPage.getPage(pageNum);
+        mBackground = bookPage.getPage(n);
+//        resetClipEdge();
+//        DoPageCurl();
+        invalidate();
+    }
 //    public int getFontSize() {
 //        return bookPage.getFontSize();
 //    }

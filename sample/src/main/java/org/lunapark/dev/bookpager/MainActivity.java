@@ -3,6 +3,8 @@ package org.lunapark.dev.bookpager;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import org.lunapark.dev.bookpagerlib.ChangePageListener;
 import org.lunapark.dev.bookpagerlib.PageCurlView;
@@ -27,15 +29,22 @@ public class MainActivity extends Activity implements ChangePageListener {
         List<String> book = getBook.get(this);
 
         // Define page curl view and set content
-        PageCurlView pageCurlView = (PageCurlView) findViewById(R.id.pager);
-        pageCurlView.setBook(book);
-//        pageCurlView.setBook(book, 200);
+        final PageCurlView pageCurlView = (PageCurlView) findViewById(R.id.pager);
+        pageCurlView.setBook(book, 3);
         pageCurlView.setOnChangePageListener(this);
 
         // Optional
         pageCurlView.setCurlMode(PageCurlView.CURLMODE_SIMPLE);
         pageCurlView.setCurlSpeed(30);
         pageCurlView.setShowPageNumber(true);
+
+        Button button = (Button) findViewById(R.id.btnGo);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pageCurlView.goToPage(0);
+            }
+        });
 
     }
 
