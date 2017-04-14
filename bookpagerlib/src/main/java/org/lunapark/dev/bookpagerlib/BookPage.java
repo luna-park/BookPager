@@ -20,18 +20,19 @@ public class BookPage {
     private int fontSize;
 
 
-    public BookPage(List<String> book) {
+    BookPage(List<String> book, int fontSize) {
         this.book = book;
+        this.fontSize = fontSize;
     }
 
-    public void setSize(int width, int height) {
+    void setViewSize(int width, int height) {
         this.width = width;
         this.height = height;
         init();
     }
 
     private void init() {
-        fontSize = height / 8;
+        if (fontSize == 0) fontSize = height / 32;
         createBitmaps();
     }
 
@@ -40,7 +41,7 @@ public class BookPage {
         bitmapEven = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
     }
 
-    public Bitmap getPage(int pageNum) {
+    Bitmap getPage(int pageNum) {
         Bitmap bitmap = bitmapEven;
         if ((pageNum & 1) == 0) {
             bitmap = bitmapOdd;
@@ -70,7 +71,7 @@ public class BookPage {
 
     }
 
-    public int size() {
+    int size() {
         return book.size();
     }
 

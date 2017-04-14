@@ -25,11 +25,11 @@ public class MainActivity extends Activity implements ChangePageListener {
         }
         // Define page curl view and set content
         PageCurlView pageCurlView = (PageCurlView) findViewById(R.id.pager);
-        pageCurlView.setBook(book);
+//        pageCurlView.setBook(book);
+        pageCurlView.setBook(book, 200);
         pageCurlView.setOnChangePageListener(this);
 
         // Optional
-
         pageCurlView.setCurlMode(PageCurlView.CURLMODE_SIMPLE);
         pageCurlView.setCurlSpeed(30);
         pageCurlView.setShowPageNumber(true);
