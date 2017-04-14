@@ -281,12 +281,12 @@ public class PageCurlView extends View {
         mCurlEdgePaint.setColor(backgroundPageColor);
         mCurlEdgePaint.setAntiAlias(true);
         mCurlEdgePaint.setStyle(Style.FILL);
-        mCurlEdgePaint.setShadowLayer(10, -5, 5, Color.LTGRAY);
+        mCurlEdgePaint.setShadowLayer(20, -5, 5, Color.LTGRAY);
 
         // Set the default props, those come from an XML :D
 
         mUpdateRate = 40;
-        mInitialEdgeOffset = 50;
+        mInitialEdgeOffset = 20;
         mCurlMode = 1;
 
         setLayerType(View.LAYER_TYPE_SOFTWARE, paint);
@@ -976,7 +976,7 @@ public class PageCurlView extends View {
     private void drawPageNum(Canvas canvas, int pageNum) {
         if (showPageNumber) {
             mTextPaint.setColor(Color.DKGRAY);
-//            pageNum++;
+            pageNum++;
             String pageNumText = "- " + pageNum + " -";
             drawCentered(canvas, pageNumText, canvas.getHeight() - mTextPaint.getTextSize() - 5,
                     mTextPaint, mTextPaintShadow);
