@@ -78,7 +78,7 @@ public class BookPage {
 
         if (fontAdaptiveWidth) {
 
-            if (rows > maxSize - 4) {
+            if (rows > maxSize - 7) {
                 fontSize = Math.round(height / rows * 0.8f);
             } else {
                 fontSize = Math.round(width / maxSize * 1.6f);

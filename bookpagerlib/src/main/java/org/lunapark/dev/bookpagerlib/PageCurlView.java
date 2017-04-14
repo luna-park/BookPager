@@ -29,7 +29,8 @@ public class PageCurlView extends View {
 
     private BookPage bookPage;
     private boolean showPageNumber = false;
-    private int backgroundPageColor = Color.rgb(235, 235, 205);
+    //    private int backgroundPageColor = Color.rgb(235, 235, 205);
+    private int backgroundPageColor = Color.rgb(235, 235, 235);
     private ChangePageListener changePageListener;
 
     /*
@@ -206,6 +207,7 @@ public class PageCurlView extends View {
         super(context);
         init(context);
         resetClipEdge();
+
     }
 
     /**
@@ -276,14 +278,15 @@ public class PageCurlView extends View {
         mCurlEdgePaint.setColor(backgroundPageColor);
         mCurlEdgePaint.setAntiAlias(true);
         mCurlEdgePaint.setStyle(Style.FILL);
-        mCurlEdgePaint.setShadowLayer(10, -5, 5, 0x99000000);
+        mCurlEdgePaint.setShadowLayer(10, -5, 5, Color.LTGRAY);
 
         // Set the default props, those come from an XML :D
 
         mUpdateRate = 40;
-        mInitialEdgeOffset = 20;
+        mInitialEdgeOffset = 50;
         mCurlMode = 1;
 
+        setLayerType(View.LAYER_TYPE_SOFTWARE, paint);
     }
 
     /**
@@ -809,26 +812,25 @@ public class PageCurlView extends View {
      * FIXME Swap to previous view
      */
     private void previousView() {
-
-
-        int backIndex = mIndex;
+//        int foreIndex = mIndex - 1;
+//        if (foreIndex < 0 ) {
+//            foreIndex = bookPage.size() - 1;
+//        }
+//
+//        int backIndex = foreIndex + 1;
 //        if (backIndex >= bookPage.size()) {
 //            backIndex = 0;
 //        }
+
+        int backIndex = mIndex;
         int foreIndex = backIndex - 1;
-        if (foreIndex < 0) {
+        if(foreIndex < 0) {
             foreIndex = bookPage.size() - 1;
         }
-
-//        int backIndex = mIndex;
-//        int foreIndex = backIndex - 1;
-//        if (foreIndex < 0) {
-//            foreIndex = bookPage.size() - 1;
-//        }
         mIndex = foreIndex;
         setViews(foreIndex, backIndex);
 
-        Log.e(TAG, String.format("index: %s\nfore: %s\nback: %s", mIndex, foreIndex, backIndex));
+        Log.e(TAG, String.format("index: %s; fore: %s; back: %s", mIndex, foreIndex, backIndex));
     }
 
     /**
@@ -861,7 +863,8 @@ public class PageCurlView extends View {
             onFirstDrawEvent();
         }
 
-        canvas.drawColor(Color.BLUE);
+//        canvas.drawColor(Color.RED);
+
 
         // Curl pages
         //DoPageCurl();
@@ -881,6 +884,7 @@ public class PageCurlView extends View {
 //        paint = new Paint();
 
         // Draw our elements
+
         drawForeground(canvas, rect, paint);
         drawBackground(canvas, rect, paint);
         drawCurlEdge(canvas);
@@ -897,6 +901,35 @@ public class PageCurlView extends View {
 
         // Restore canvas
         canvas.restore();
+    }
+
+    private void zDrawPath(Canvas canvas, Paint paint, int color) {
+        Path path = new Path();
+        path.moveTo(mA.x, mA.y);
+
+        path.lineTo(mB.x, mB.y);
+        path.lineTo(mC.x, mC.y);
+        path.lineTo(mD.x, mD.y);
+//        path.lineTo(mA.x, mA.y);
+
+        paint.setColor(color);
+        paint.setStrokeWidth(1);
+        canvas.drawPath(path, paint);
+
+    }
+
+    private void zDrawVectorz(Vector2D v1, Vector2D v2, Canvas canvas, Paint paint, int color) {
+        paint.setColor(color);
+        paint.setStrokeWidth(5);
+        canvas.drawCircle(v1.x, v1.y, 5, paint);
+        canvas.drawCircle(v2.x, v2.y, 5, paint);
+        canvas.drawLine(v1.x, v1.y, v2.x, v2.y, paint);
+    }
+
+    private void zDrawPoints(Vector2D v1, Canvas canvas, Paint paint, int color) {
+        paint.setColor(color);
+        paint.setStrokeWidth(5);
+        canvas.drawCircle(v1.x, v1.y, 5, paint);
     }
 
     /**
@@ -951,6 +984,8 @@ public class PageCurlView extends View {
         drawPageNum(canvas, mIndex);
 
         canvas.restore();
+
+
     }
 
     /**
